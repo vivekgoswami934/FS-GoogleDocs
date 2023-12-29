@@ -1,15 +1,15 @@
-import { Model } from "sequelize";
 import {
-  Table,
+  BelongsTo,
   Column,
   DataType,
   ForeignKey,
-  BelongsTo,
+  Table,
+  Model,
 } from "sequelize-typescript";
 import { User } from "./user.model";
 
 @Table({ tableName: "refresh_token", underscored: true })
-class RefershToken extends Model {
+class RefreshToken extends Model {
   @Column(DataType.STRING)
   token!: string;
 
@@ -20,4 +20,4 @@ class RefershToken extends Model {
   user!: User;
 }
 
-export { RefershToken };
+export { RefreshToken };

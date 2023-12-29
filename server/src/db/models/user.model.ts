@@ -1,7 +1,28 @@
-import { Model } from "sequelize";
-import { Table, Column, DataType, HasMany } from "sequelize-typescript";
-import { RefershToken } from "./refersh-token.model";
+import {
+  Column,
+  DataType,
+  HasMany,
+  Table,
+  Model,
+  BelongsToMany,
+  Scopes,
+} from "sequelize-typescript";
+import { RefreshToken } from "./refresh-token.model";
+import { Role } from "./role.model";
+import { UserRole } from "./user-role.model";
+import { DocumentUser } from "./document-user.model";
 
+@Scopes(() => ({
+  withRoles: {
+    include: [
+      {
+        model: UserRole,
+        attributes: ["createdAt", "updatedAt"],
+        include: [Role],
+      },
+    ],
+  },
+}))
 @Table({ tableName: "user", underscored: true })
 class User extends Model {
   @Column(DataType.STRING)
@@ -10,19 +31,36 @@ class User extends Model {
   @Column(DataType.STRING)
   password!: string;
 
-  @Column(DataType.STRING)
+  @Column(DataType.BOOLEAN)
   isVerified!: boolean;
 
   @Column(DataType.STRING)
   verificationToken!: string;
 
   @Column(DataType.STRING)
-  passwordReset!: string;
+  passwordResetToken!: string;
 
-  @HasMany(() => RefershToken, {
+  @HasMany(() => RefreshToken, {
     onDelete: "CASCADE",
   })
-  refreshToken!: Array<RefershToken>;
+  refreshTokens!: Array<RefreshToken>;
+
+  @BelongsToMany(() => Role, {
+    through: {
+      model: () => UserRole,
+    },
+  })
+  roles!: Array<Role>;
+
+  @HasMany(() => UserRole, {
+    onDelete: "CASCADE",
+  })
+  userRoles!: Array<UserRole>;
+
+  @HasMany(() => DocumentUser, {
+    onDelete: "CASCADE",
+  })
+  sharedDocuments!: Array<DocumentUser>;
 }
 
 export { User };
