@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 
 import { config } from "dotenv";
 import db from "./db/models";
+import router from "./routes";
 
 config();
 
@@ -9,6 +10,8 @@ const app: Express = express();
 app.use(express.json());
 
 const PORT = 7070;
+
+app.use(router);
 
 db.sequelize.sync();
 

@@ -10,3 +10,7 @@ class AuthValidator {
     body("password").exists().withMessage("Must provide a valid Password"),
   ];
 }
+
+const authValidator = new AuthValidator();
+
+export { authValidator };

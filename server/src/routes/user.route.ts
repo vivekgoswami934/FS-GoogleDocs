@@ -2,6 +2,8 @@ import { Router } from "express";
 import { userValidator } from "../validators/user.validator";
 import { userController } from "../controllers/user/user.controller";
 
-const router = Router();
+const userRouter = Router();
 
-router.post("/", userValidator.register, userController.register);
+userRouter.post("/", userValidator.register, userController.register);
+
+export default userRouter;

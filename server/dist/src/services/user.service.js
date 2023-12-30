@@ -16,6 +16,7 @@ exports.userService = void 0;
 const user_model_1 = require("../db/models/user.model");
 const bcrypt_1 = require("bcrypt");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const refresh_token_model_1 = require("../db/models/refresh-token.model");
 class UserService {
     constructor() {
         this.findUserByEmail = (email) => __awaiter(this, void 0, void 0, function* () {
@@ -32,6 +33,38 @@ class UserService {
                 verificationToken,
             });
             // call method to send verfication email
+        });
+        this.checkPassword = (user, password) => __awaiter(this, void 0, void 0, function* () {
+            return yield (0, bcrypt_1.compare)(password, user.password);
+        });
+        this.getRequestUser = (user) => __awaiter(this, void 0, void 0, function* () {
+            if (user instanceof user_model_1.User) {
+                const userWithRoles = yield user_model_1.User.scope("withRoles").findByPk(user.id);
+                const roles = userWithRoles === null || userWithRoles === void 0 ? void 0 : userWithRoles.userRoles.map((userRole) => userRole.role.name);
+                return {
+                    id: user.id,
+                    email: user.email,
+                    roles: roles,
+                };
+            }
+            return user;
+        });
+        this.generateAuthResponse = (user) => __awaiter(this, void 0, void 0, function* () {
+            const requestUser = yield this.getRequestUser(user);
+            const accessToken = jsonwebtoken_1.default.sign(requestUser, "access_token", {
+                expiresIn: "24h",
+            });
+            const refreshToken = jsonwebtoken_1.default.sign(requestUser, "refresh_token", {
+                expiresIn: "24h",
+            });
+            yield refresh_token_model_1.RefreshToken.destroy({
+                where: { userId: requestUser.id },
+            });
+            yield refresh_token_model_1.RefreshToken.create({
+                token: refreshToken,
+                userId: requestUser.id,
+            });
+            return { accessToken, refreshToken };
         });
     }
 }
