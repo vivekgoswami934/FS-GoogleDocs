@@ -31,7 +31,7 @@ class UserValidator {
                 .withMessage("Password must be at least 8 characters & not more than 30 characters"),
             (0, express_validator_1.body)("password1")
                 .matches(/\d/)
-                .withMessage("Password must contain atleas 1 number"),
+                .withMessage("Password must contain atleast 1 number"),
             (0, express_validator_1.body)("password2").custom((value, { req }) => {
                 if (value !== req.body.password1) {
                     throw new Error("Password must match");

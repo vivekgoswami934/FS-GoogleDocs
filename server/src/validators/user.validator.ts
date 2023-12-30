@@ -26,7 +26,7 @@ class UserValidator {
 
     body("password1")
       .matches(/\d/)
-      .withMessage("Password must contain atleas 1 number"),
+      .withMessage("Password must contain atleast 1 number"),
 
     body("password2").custom((value, { req }) => {
       if (value !== req.body.password1) {
