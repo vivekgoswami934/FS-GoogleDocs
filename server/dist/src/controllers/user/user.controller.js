@@ -16,16 +16,36 @@ exports.userController = void 0;
 const catch_async_1 = __importDefault(require("../../middleware/catch-async"));
 const express_validator_1 = require("express-validator");
 const user_service_1 = require("../../services/user.service");
+const responses_1 = require("../../responses");
 class UserController {
     constructor() {
         this.register = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
             const err = (0, express_validator_1.validationResult)(req);
-            if (!err.isEmpty) {
+            if (!err.isEmpty()) {
                 return res.status(400).json(err);
             }
             const { email, password } = req.body;
             yield user_service_1.userService.createUser(email, password);
             return res.sendStatus(200);
+        }));
+        this.getUser = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const userId = parseInt(req.params.id);
+            const user = yield user_service_1.userService.findUserById(userId);
+            if (user === null)
+                return res.sendStatus(400);
+            return res.status(200).json(user);
+        }));
+        this.resetPassword = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const err = (0, express_validator_1.validationResult)(req);
+            if (!err.isEmpty()) {
+                return res.status(400).json(err);
+            }
+            const { email } = req.body;
+            const user = yield user_service_1.userService.findUserByEmail(email);
+            if (!user)
+                return res.status(200).json(responses_1.resetPassword);
+            yield user_service_1.userService.resetPassword;
+            return res.status(200).json(responses_1.resetPassword);
         }));
     }
 }

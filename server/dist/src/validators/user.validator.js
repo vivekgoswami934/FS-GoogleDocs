@@ -39,6 +39,12 @@ class UserValidator {
                 return true;
             }),
         ];
+        this.resetPassword = [
+            (0, express_validator_1.body)("email")
+                .isEmail()
+                .normalizeEmail()
+                .withMessage("Must Provide a valid email address"),
+        ];
     }
 }
 const userValidator = new UserValidator();

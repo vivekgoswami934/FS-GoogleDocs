@@ -88,6 +88,26 @@ class UserService {
   public logoutUser = async (userId: number) => {
     await RefreshToken.destroy({ where: { userId } });
   };
+
+  public findUserById = async (id: number) => {
+    const user = await User.findByPk(id);
+    return user;
+  };
+
+  public resetPassword = async (user: User) => {
+    const passwordResetToken = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      "password_reset",
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    // send password reset email method should be called
+  };
 }
 
 const userService = new UserService();

@@ -36,8 +36,15 @@ class UserValidator {
       return true;
     }),
   ];
+
+  public resetPassword = [
+    body("email")
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("Must Provide a valid email address"),
+  ];
 }
 
 const userValidator = new UserValidator();
 
-export {userValidator};
+export { userValidator };
