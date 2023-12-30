@@ -17,6 +17,7 @@ const catch_async_1 = __importDefault(require("../../middleware/catch-async"));
 const express_validator_1 = require("express-validator");
 const user_service_1 = require("../../services/user.service");
 const responses_1 = require("../../responses");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 class UserController {
     constructor() {
         this.register = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -46,6 +47,42 @@ class UserController {
                 return res.status(200).json(responses_1.resetPassword);
             yield user_service_1.userService.resetPassword;
             return res.status(200).json(responses_1.resetPassword);
+        }));
+        this.confirmResetPassword = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
+            const err = (0, express_validator_1.validationResult)(req);
+            if (!err.isEmpty()) {
+                return res.status(400).json(err);
+            }
+            const resetPasswordToken = req.params.token;
+            const { password1 } = req.body;
+            jsonwebtoken_1.default.verify(resetPasswordToken, "password_reset", (err, decoded) => __awaiter(this, void 0, void 0, function* () {
+                if (err)
+                    return res.sendStatus(403);
+                try {
+                    const { email } = decoded;
+                    user_service_1.userService
+                        .findUserByPasswordResetToken(email, resetPasswordToken)
+                        .then((user) => {
+                        if (!user)
+                            return res.sendStatus(400);
+                        user_service_1.userService
+                            .updatePassword(user, password1)
+                            .then(() => {
+                            return res.sendStatus(200);
+                        })
+                            .catch((err) => {
+                            return res.sendStatus(500);
+                        });
+                    })
+                        .catch((err) => {
+                        return res.sendStatus(500);
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    return res.sendStatus(403);
+                }
+            }));
         }));
     }
 }

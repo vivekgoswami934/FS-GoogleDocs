@@ -88,6 +88,22 @@ class UserService {
             });
             // send password reset email method should be called
         });
+        this.findUserByPasswordResetToken = (email, passwordResetToken) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield user_model_1.User.findOne({
+                where: {
+                    email,
+                    passwordResetToken,
+                },
+            });
+            return user;
+        });
+        this.updatePassword = (user, password) => __awaiter(this, void 0, void 0, function* () {
+            const salt = yield (0, bcrypt_1.genSalt)();
+            const hashedPassword = yield (0, bcrypt_1.hash)(password, salt);
+            yield user.update({
+                password: hashedPassword,
+            });
+        });
     }
 }
 const userService = new UserService();

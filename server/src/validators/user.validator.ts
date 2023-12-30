@@ -43,6 +43,24 @@ class UserValidator {
       .normalizeEmail()
       .withMessage("Must Provide a valid email address"),
   ];
+
+  public confirmResetPassword = [
+    body("password1")
+      .isLength({ min: 8, max: 30 })
+      .withMessage(
+        "Password must be at least 8 characters & not more than 30 characters."
+      ),
+    body("password1")
+      .matches(/\d/)
+      .withMessage("Password must contain atleast 1 number"),
+
+    body("password2").custom((value, { req }) => {
+      if (value !== req.body.password1) {
+        throw new Error("Password must match.");
+      }
+      return true;
+    }),
+  ];
 }
 
 const userValidator = new UserValidator();
