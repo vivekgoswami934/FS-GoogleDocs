@@ -89,6 +89,43 @@ class UserController {
       );
     }
   );
+
+  public verfiyEmail = catchAsync(async (req: Request, res: Response) => {
+    const verficationToken = req.params.token;
+
+    jwt.verify(
+      verficationToken,
+      "verify-email",
+      async (err: VerifyErrors | null, decoded: unknown) => {
+        if (err) return res.sendStatus(403);
+        try {
+          const { email } = decoded as { email: string };
+
+          userService
+            .findUserByVerificationToken(email, verficationToken)
+            .then((user) => {
+              if (!user || user.isVerified) {
+                return res.sendStatus(400);
+              }
+              userService
+                .updateIsVerified(user, true)
+                .then(() => {
+                  return res.sendStatus(200);
+                })
+                .catch(() => {
+                  return res.sendStatus(500);
+                });
+            })
+            .catch(() => {
+              return res.sendStatus(500);
+            });
+        } catch (error) {
+          console.log(error);
+          return res.sendStatus(403);
+        }
+      }
+    );
+  });
 }
 
 const userController = new UserController();

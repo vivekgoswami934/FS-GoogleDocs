@@ -6,6 +6,7 @@ const user_controller_1 = require("../controllers/user/user.controller");
 const auth_1 = require("../middleware/auth");
 const userRouter = (0, express_1.Router)();
 userRouter.post("/", user_validator_1.userValidator.register, user_controller_1.userController.register);
+userRouter.put("/verify-email/:token", user_controller_1.userController.verfiyEmail);
 userRouter.get("/:id", auth_1.authenticate, user_controller_1.userController.getUser);
 userRouter.post("/reset-password", user_validator_1.userValidator.resetPassword, user_controller_1.userController.resetPassword);
 userRouter.put("/password/:token", user_validator_1.userValidator.confirmResetPassword, user_controller_1.userController.confirmResetPassword);

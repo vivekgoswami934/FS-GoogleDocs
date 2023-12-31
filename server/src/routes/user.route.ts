@@ -6,6 +6,7 @@ import { authenticate } from "../middleware/auth";
 const userRouter = Router();
 
 userRouter.post("/", userValidator.register, userController.register);
+userRouter.put("/verify-email/:token", userController.verfiyEmail);
 
 userRouter.get("/:id", authenticate, userController.getUser);
 
