@@ -25,8 +25,8 @@ class UserController {
             if (!err.isEmpty()) {
                 return res.status(400).json(err);
             }
-            const { email, password } = req.body;
-            yield user_service_1.userService.createUser(email, password);
+            const { email, password1 } = req.body;
+            yield user_service_1.userService.createUser(email, password1);
             return res.sendStatus(200);
         }));
         this.getUser = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {

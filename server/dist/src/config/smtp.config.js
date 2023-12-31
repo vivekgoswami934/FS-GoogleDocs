@@ -1,12 +1,13 @@
 "use strict";
-// import { createTransport } from "nodemailer";
-// const transporter = createTransport({
-//   port: 465,
-//   host: "smtp.gmail.com",
-//   auth: {
-//     user: "xyz.com",
-//     pass: "xyz",
-//   },
-//   secure: true,
-// });
-// export default transporter;
+Object.defineProperty(exports, "__esModule", { value: true });
+const nodemailer_1 = require("nodemailer");
+const transporter = (0, nodemailer_1.createTransport)({
+    port: 465,
+    host: "smtp.gmail.com",
+    auth: {
+        user: "vivekgoswami934934@gmail.com",
+        pass: "password",
+    },
+    secure: true,
+});
+exports.default = transporter;

@@ -2,6 +2,7 @@ import { User } from "../db/models/user.model";
 import { compare, genSalt, hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { RefreshToken } from "../db/models/refresh-token.model";
+import { mailservice } from "./mail.service";
 
 class UserService {
   public findUserByEmail = async (email: string): Promise<User | null> => {
@@ -24,6 +25,29 @@ class UserService {
     });
 
     // call method to send verfication email
+    await this.sendVericationEmail(user);
+  };
+
+  private sendVericationEmail = async (user: User) => {
+    const mail = {
+      from: "vivekgoswami934934@gmail.com",
+      to: user.email,
+      subject: "Welcome to Vivek's Google Docs",
+      text: `Click the following link to verify your email : http://localhost:3000/user/verify-email/${user.verificationToken}`,
+    };
+
+    await mailservice.sendMail(mail);
+  };
+
+  public sendPasswordResetEmail = async (user: User) => {
+    const mail = {
+      from: "vivekgoswami934934@gmail.com",
+      to: user.email,
+      subject: "Please reset your password!!!",
+      text: `Click the following link: http://localhost:3000/user/verify-email/${user.verificationToken}`,
+    };
+
+    await mailservice.sendMail(mail);
   };
 
   public checkPassword = async (
@@ -107,6 +131,7 @@ class UserService {
     );
 
     // send password reset email method should be called
+    await this.sendPasswordResetEmail(user);
   };
 
   public findUserByPasswordResetToken = async (

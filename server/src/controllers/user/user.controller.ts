@@ -12,9 +12,9 @@ class UserController {
       return res.status(400).json(err);
     }
 
-    const { email, password } = req.body;
+    const { email, password1 } = req.body;
 
-    await userService.createUser(email, password);
+    await userService.createUser(email, password1);
 
     return res.sendStatus(200);
   });

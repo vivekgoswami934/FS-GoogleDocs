@@ -34,9 +34,9 @@ class AuthController {
             if (!validPassword) {
                 return res.status(401).json({ errors: responses_1.userNotFound });
             }
-            // if (!user.isVerified) {
-            //   return res.status(401).json({ errors: emailNotVerified });
-            // }
+            if (!user.isVerified) {
+                return res.status(401).json({ errors: responses_1.emailNotVerified });
+            }
             const authResponse = yield user_service_1.userService.generateAuthResponse(user);
             return res.status(200).json(authResponse);
         }));

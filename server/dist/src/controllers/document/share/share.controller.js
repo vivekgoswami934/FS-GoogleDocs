@@ -18,7 +18,7 @@ const express_validator_1 = require("express-validator");
 const document_model_1 = require("../../../db/models/document.model");
 const user_model_1 = require("../../../db/models/user.model");
 const document_user_model_1 = require("../../../db/models/document-user.model");
-// import { mailservice } from "../../../services/mail.service";
+const mail_service_1 = require("../../../services/mail.service");
 class ShareController {
     constructor() {
         this.create = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -54,7 +54,7 @@ class ShareController {
                 text: `Click the following link to view and edit the document : http://localhost:3000/document/${id}`,
             };
             //call mailservice to send email
-            // await mailservice.sendMail(mail);
+            yield mail_service_1.mailservice.sendMail(mail);
             return res.status(201).json(documentUser);
         }));
         this.delete = (0, catch_async_1.default)((req, res) => __awaiter(this, void 0, void 0, function* () {
